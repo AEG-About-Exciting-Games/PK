@@ -12,8 +12,7 @@ class PostsForm(forms.ModelForm):
 
 		# specify fields to be used
 		fields = [
-			"writer",
+			# "writer",
 			"movie",
 			"content",
-			"date",
 		]
