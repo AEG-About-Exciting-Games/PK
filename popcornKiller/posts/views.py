@@ -23,12 +23,11 @@ def list_view(request):
         context ={}
 
         # add the dictionary during initialization
-        context["dataset"] = Posts.objects.all()
+        context["posts"] = Posts.objects.all()
 
         return render(request, "list_view.html", context)
 
 
-@csrf_exempt
 def detail_view(request, id):
     if request.method == 'GET':
         # dictionary for initial data with 
@@ -36,7 +35,7 @@ def detail_view(request, id):
         context ={}
 
         # add the dictionary during initialization
-        context["data"] = Posts.objects.get(id = id)
+        context["posts"] = Posts.objects.get(id = id)
 
         return render(request, "detail_view.html", context)
 
@@ -61,7 +60,7 @@ def update_view(request, id):
             return HttpResponseRedirect("/"+id)
 
         # add form dictionary to context
-        context["form"] = form
+        context["posts"] = form
 
         return render(request, "update_view.html", context)
 
@@ -75,7 +74,7 @@ def delete_view(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(Posts, id = id)
 
-    if request.method =="POST":
+    if request.method =="DELETE":
         # delete object
         obj.delete()
         # after deleting redirect to 
