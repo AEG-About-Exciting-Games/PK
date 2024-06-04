@@ -1,19 +1,18 @@
 from django import forms
-from .models import Post
+from .models import User
 
 
 # creating a form
-class PostForm(forms.ModelForm):
+class UserForm(forms.ModelForm):
 
 	# create meta class
 	class Meta:
 		# specify model to be used
-		model = Post
+		model = User
 
 		# specify fields to be used
 		fields = [
-			"title",
-			"writer",
-			"movie",
-			"content",
+			"name",
+			"email",
+			"password",
 		]
