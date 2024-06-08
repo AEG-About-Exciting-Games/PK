@@ -6,13 +6,12 @@ from .forms import PostForm
 
 from users.models import User
 
-
 @csrf_exempt
 def create_view(request):
     if request.method == 'POST':
         title = request.POST['title']
-        writer = User.objects.get(email=request.POST['writer'])
-        print(writer)
+        email = request.POST['email']
+        writer = get_object_or_404(User, email=email)
         movie = request.POST['movie']
         content = request.POST['content']
         post = Post(title=title, writer=writer, movie=movie, content=content)
@@ -26,10 +25,11 @@ def list_view(request):
     if request.method == 'GET':
         # dictionary for initial data with 
         # field names as keys
-        context ={}
+        context = {
+            "Post": Post.objects.all()
+        }
 
         # add the dictionary during initialization
-        context["Post"] = Post.objects.all()
 
         return render(request, "list_view.html", context)
 
@@ -38,10 +38,11 @@ def detail_view(request, id):
     if request.method == 'GET':
         # dictionary for initial data with 
         # field names as keys
-        context ={}
+        context = {
+            "Post": Post.objects.get(id=id)
+        }
 
         # add the dictionary during initialization
-        context["Post"] = Post.objects.get(id = id)
 
         return render(request, "detail_view.html", context)
 
@@ -51,19 +52,19 @@ def update_view(request, id):
     if request.method == 'PUT':
         # dictionary for initial data with 
         # field names as keys
-        context ={}
+        context = {}
 
         # fetch the object related to passed id
-        obj = get_object_or_404(Post, id = id)
+        obj = get_object_or_404(Post, id=id)
 
         # pass the object as instance in form
-        form = PostForm(request.POST or None, instance = obj)
+        form = PostForm(request.POST or None, instance=obj)
 
         # save the data from the form and
         # redirect to detail_view
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect("/"+id)
+            return HttpResponseRedirect("/" + id)
 
         # add form dictionary to context
         context["Post"] = form
@@ -75,12 +76,12 @@ def update_view(request, id):
 def delete_view(request, id):
     # dictionary for initial data with 
     # field names as keys
-    context ={}
+    context = {}
 
     # fetch the object related to passed id
-    obj = get_object_or_404(Post, id = id)
+    obj = get_object_or_404(Post, id=id)
 
-    if request.method =="DELETE":
+    if request.method == "DELETE":
         # delete object
         obj.delete()
         # after deleting redirect to 
@@ -88,4 +89,3 @@ def delete_view(request, id):
         return HttpResponseRedirect("/")
 
     return render(request, "delete_view.html", context)
-

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Box Office Rankings</h1>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% else %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Movie Name</th>
+                    <th>Opening Date</th>
+                    <th>Sales Amount</th>
+                    <th>Audience Count</th>
+                    <th>Rank Change</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for movie in box_office_list %}
+                    <tr>
+                        <td>{{ movie.rank }}</td>
+                        <td>{{ movie.movieNm }}</td>
+                        <td>{{ movie.openDt }}</td>
+                        <td>{{ movie.salesAmt }}</td>
+                        <td>{{ movie.audiCnt }}</td>
+                        <td>{{ movie.rankInten }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock content %}
