@@ -16,6 +16,12 @@
                 <li>{{ genre.genreNm }}</li>
             </ul>
         {% endfor %}
+        <h4>제작 국가</h4>
+        {% for nation in details.nations %}
+            <ul>
+                <li>{{ nation.nationNm }}</li>
+            </ul>
+        {% endfor %}
         <h4>심의정보</h4>
         <table border="1">
             <thead>
@@ -34,8 +40,7 @@
         <h4>감독</h4>
         {% for director in details.directors %}
             <ul>
-                <li>{{ director.peopleNm }}</li>
-                <li>{{ director.peopleNmEn }}</li>
+                <li>{{ director.peopleNm }} [{{ director.peopleNmEn }}]</li>
             </ul>
         {% endfor %}
         <h4>배우</h4>
