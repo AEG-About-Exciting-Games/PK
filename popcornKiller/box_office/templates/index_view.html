@@ -4,10 +4,10 @@
     <h1>Box Office Rankings</h1>
     <h2>{{ box_office.boxofficeType }}</h2>
     <h3>{{ box_office.showRange }}</h3>
-    {% load humanize %}
     {% if error %}
         <p>{{ error }}</p>
     {% else %}
+        {% load humanize %}
         <table border="1">
             <thead>
                 <tr>
@@ -28,7 +28,12 @@
                         <td>{{ movie.rank }}</td>
                         <td>{{ movie.rankInten }}</td>
                         <td>{{ movie.rankOldAndNew }}</td>
-                        <td>{{ movie.movieNm }}</td>
+                        <td>
+                            <form action="{% url 'movie_detail' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="movieCd" value="{{ movie.movieCd }}">{{ movie.movieNm }}</button>
+                            </form>
+                        </td>
                         <td>{{ movie.openDt }}</td>
                         <td>{{ movie.salesShare }}%</td>
                         <td>{{ movie.salesAmt|intcomma }}</td>

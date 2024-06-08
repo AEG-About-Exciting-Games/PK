@@ -1,10 +1,11 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+
+from dotenv import load_dotenv
+from datetime import datetime, timedelta
 import requests
 import json
 import os
-
-from django.shortcuts import render
-from dotenv import load_dotenv
-from datetime import datetime, timedelta
 
 load_dotenv()
 
@@ -41,3 +42,28 @@ def daily_view(request):
             return render(request, 'index_view.html', {'error': 'Failed to fetch API data or invalid JSON'})
     else:
         return render(request, 'index_view.html', {'error': 'No date provided'})
+
+
+def movie_detail(request):
+    if request.method == 'POST':
+        movie_cd = request.POST.get('movieCd')
+        print(f"movie_cd = {movie_cd}")
+        url = ('http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json'
+               f'?key={API_KEY}&movieCd={movie_cd}')
+
+        response = requests.get(url)
+        if response.status_code != 200:
+            return None
+
+        try:
+            data = response.json()
+        except json.JSONDecodeError:
+            return None
+
+        if data:
+            movie_info = (data.get('movieInfoResult', {}).get('movieInfo', {}))
+            return render(request, 'movie_detail.html', {'details': movie_info})
+        else:
+            return render(request, 'movie_detail.html', {'error': 'Failed to fetch API data or invalid JSON'})
+    else:
+        return render(request, 'movie_detail.html', {'error': 'No date provided'})
