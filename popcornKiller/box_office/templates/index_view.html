@@ -27,7 +27,13 @@
                     <tr>
                         <td>{{ movie.rank }}</td>
                         <td>{{ movie.rankInten }}</td>
-                        <td>{{ movie.rankOldAndNew }}</td>
+                        <td>
+                            {% if movie.rankOldAndNew == "OLD" %}
+                                기존
+                            {% else %}
+                                신규
+                            {% endif %}
+                        </td>
                         <td>
                             <form action="{% url 'movie_detail' %}" method="post">
                                 {% csrf_token %}

@@ -55,7 +55,12 @@
             <tbody>
                 {% for actor in details.actors %}
                     <tr>
-                        <td>{{ actor.peopleNm }}</td>
+                        <td>
+                            <form action="{% url 'actor_detail' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="peopleNmEn" value="{{ actor.peopleNmEn }}">{{ actor.peopleNm }}</button>
+                            </form>
+                        </td>
                         <td>{{ actor.peopleNmEn }}</td>
                         <td>{{ actor.cast }}</td>
                     </tr>
