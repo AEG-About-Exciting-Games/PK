@@ -93,9 +93,10 @@ def actor_detail(request):
 
         if people_nm:
             people = fetch_api_actor_data(people_nm)
+            if not people:
+                return render(request, 'actor_detail.html', {'error': 'Failed to fetch API data or invalid JSON'})
 
             people_cd = (people.get('peopleListResult').get('peopleList')[0].get('peopleCd'))
-
             url = ('http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleInfo.json'
                    f'?key={API_KEY}&peopleCd={people_cd}')
 
@@ -115,3 +116,5 @@ def actor_detail(request):
                 return render(request, 'actor_detail.html', {'error': 'Failed to fetch API data or invalid JSON'})
         else:
             return render(request, 'actor_detail.html', {'error': 'No date provided'})
+    else:
+        return render(request, 'actor_detail.html', {'error': 'Invalid request method'})
