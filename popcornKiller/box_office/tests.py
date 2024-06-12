@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 
 ## Views TEST - Start
@@ -9,8 +9,8 @@ class DailyViewTests(TestCase):
     def setUp(self):
         self.client = Client()
 
-    @patch('box_office.views.fetch_api_daily_data')
-    def test_daily_view_with_valid_data(self, mock_fetch_api_daily_data):
+    @patch('box_office.views.fetch_api_data')
+    def test_daily_view_with_valid_data(self, mock_fetch_api_data):
         mock_data = {
             "boxOfficeResult": {
                 "boxofficeType": "일별 박스오피스",
@@ -31,16 +31,16 @@ class DailyViewTests(TestCase):
                 ]
             }
         }
-        mock_fetch_api_daily_data.return_value = mock_data
+        mock_fetch_api_data.return_value = mock_data
 
         response = self.client.get(reverse('daily_view'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, '엽문4: 더 파이널')
         self.assertTemplateUsed(response, 'index_view.html')
 
-    @patch('box_office.views.fetch_api_daily_data')
-    def test_daily_view_with_invalid_data(self, mock_fetch_api_daily_data):
-        mock_fetch_api_daily_data.return_value = None
+    @patch('box_office.views.fetch_api_data')
+    def test_daily_view_with_invalid_data(self, mock_fetch_api_data):
+        mock_fetch_api_data.return_value = None
 
         response = self.client.get(reverse('daily_view'))
         self.assertEqual(response.status_code, 200)
@@ -53,8 +53,8 @@ class MovieDetailViewTests(TestCase):
     def setUp(self):
         self.client = Client()
 
-    @patch('requests.get')
-    def test_movie_detail_with_valid_data(self, mock_get):
+    @patch('box_office.views.fetch_api_data')
+    def test_movie_detail_with_valid_data(self, mock_fetch_api_data):
         mock_response = {
             "movieInfoResult": {
                 "movieInfo": {
@@ -71,18 +71,16 @@ class MovieDetailViewTests(TestCase):
                 }
             }
         }
-        mock_get.return_value.status_code = 200
-        mock_get.return_value.json.return_value = mock_response
+        mock_fetch_api_data.return_value = mock_response
 
         response = self.client.post(reverse('movie_detail'), {'movieCd': '20205262'})
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '액션')
+        self.assertContains(response, '엽문')
         self.assertTemplateUsed(response, 'movie_detail.html')
 
-    @patch('requests.get')
-    def test_movie_detail_with_invalid_data(self, mock_get):
-        mock_get.return_value.status_code = 200
-        mock_get.return_value.json.return_value = None
+    @patch('box_office.views.fetch_api_data')
+    def test_movie_detail_with_invalid_data(self, mock_fetch_api_data):
+        mock_fetch_api_data.return_value = None
 
         response = self.client.post(reverse('movie_detail'), {'movieCd': '20205262'})
         self.assertEqual(response.status_code, 200)
@@ -95,10 +93,9 @@ class ActorDetailViewTests(TestCase):
     def setUp(self):
         self.client = Client()
 
-    @patch('requests.get')
-    @patch('box_office.views.fetch_api_actor_data')
-    def test_actor_detail_with_valid_data(self, mock_fetch_api_actor_data, mock_get):
-        # fetch_api_actor_data 함수의 반환 값을 모킹합니다.
+    @patch('box_office.views.fetch_api_data')
+    def test_actor_detail_with_valid_data(self, mock_fetch_api_data):
+        # 첫 번째 API 호출 모킹 값
         mock_actor_list_response = {
             "peopleListResult": {
                 "peopleList": [
@@ -109,9 +106,8 @@ class ActorDetailViewTests(TestCase):
                 ]
             }
         }
-        mock_fetch_api_actor_data.return_value = mock_actor_list_response
 
-        # requests.get 함수의 JSON 응답을 모킹합니다.
+        # 두 번째 API 호출 모킹 값.
         mock_actor_info_response = {
             "peopleInfoResult": {
                 "peopleInfo": {
@@ -123,27 +119,47 @@ class ActorDetailViewTests(TestCase):
                 }
             }
         }
-        mock_get.return_value.status_code = 200
-        mock_get.return_value.json.return_value = mock_actor_info_response
+
+        def side_effect(url):
+            if "searchPeopleList" in url:
+                return mock_actor_list_response
+            elif "searchPeopleInfo" in url:
+                return mock_actor_info_response
+            return None
+
+        mock_fetch_api_data.side_effect = side_effect
 
         # POST 요청을 시뮬레이션합니다.
-        response = self.client.post(reverse('actor_detail'), {'peopleNmEn': 'GANG Dong-won'})
+        response = self.client.post(reverse('actor_detail'), {
+            'peopleNmEn': 'GANG Dong-won',
+            'peopleCd': '10000558'})
+
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, '강동원')
         self.assertTemplateUsed(response, 'actor_detail.html')
 
-    @patch('requests.get')
-    @patch('box_office.views.fetch_api_actor_data')
-    def test_actor_detail_with_invalid_data(self, mock_fetch_api_actor_data, mock_get):
-        pass
-        # # fetch_api_actor_data 함수가 None을 반환하도록 모킹합니다.
-        # mock_fetch_api_actor_data.return_value = None
-        #
-        # # POST 요청을 시뮬레이션합니다.
-        # 빈 값으로 요청할 경우 디폴트 값(json)을 반환
-        # response = self.client.post(reverse('actor_detail'), {'peopleNmEn': ""})
-        # self.assertEqual(response.status_code, 200)
-        # self.assertContains(response, 'Failed to fetch API data or invalid JSON')
-        # self.assertTemplateUsed(response, 'actor_detail.html')
+    @patch('box_office.views.fetch_api_data')
+    def test_actor_detail_with_invalid_data(self, mock_fetch_api_data):
+        # 첫 번째 API 호출 모킹 값
+        mock_actor_list_response = None
+
+        # 두 번째 API 호출 모킹 값
+        mock_actor_info_response = None
+
+        # 두 번의 다른 URL 호출에 대해 서로 다른 값을 반환하도록 설정
+        def side_effect(url):
+            if "searchPeopleList" in url:
+                return mock_actor_list_response
+            elif "searchPeopleInfo" in url:
+                return mock_actor_info_response
+            return None
+
+        mock_fetch_api_data.side_effect = side_effect
+
+        # POST 요청을 시뮬레이션합니다.
+        response = self.client.post(reverse('actor_detail'), {'peopleNmEn': 'GANG Dong-won'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Failed to fetch API data or invalid JSON')
+        self.assertTemplateUsed(response, 'actor_detail.html')
 
 ## Views TEST - End

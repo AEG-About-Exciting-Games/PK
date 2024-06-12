@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
@@ -12,9 +11,7 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 
 
-def fetch_api_daily_data(date):
-    url = ('http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json'
-           f'?key={API_KEY}&targetDt={date}')
+def fetch_api_data(url):
 
     response = requests.get(url)
 
@@ -29,30 +26,14 @@ def fetch_api_daily_data(date):
     return movies
 
 
-def fetch_api_actor_data(people_nm):
-    print(f"movie_cd = {people_nm}")
-    url = ('http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleList.json'
-           f'?key={API_KEY}&peopleNm={people_nm}')
-
-    response = requests.get(url)
-
-    if response.status_code != 200:
-        return None
-
-    try:
-        people = response.json()
-    except json.JSONDecodeError:
-        return None
-
-    return people
-
-
 def daily_view(request):
     date = datetime.now().date() - timedelta(days=1)
     date = str(date).replace("-", "")
 
     if date:
-        data = fetch_api_daily_data(date)
+        url = ('http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json'
+               f'?key={API_KEY}&targetDt={date}')
+        data = fetch_api_data(url)
         if data:
             daily_box_office_list = (data.get('boxOfficeResult', {}))
             return render(request, 'index_view.html', {'box_office': daily_box_office_list})
@@ -65,18 +46,10 @@ def daily_view(request):
 def movie_detail(request):
     if request.method == 'POST':
         movie_cd = request.POST.get('movieCd')
-        print(f"movie_cd = {movie_cd}")
         url = ('http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json'
                f'?key={API_KEY}&movieCd={movie_cd}')
 
-        response = requests.get(url)
-        if response.status_code != 200:
-            return None
-
-        try:
-            data = response.json()
-        except json.JSONDecodeError:
-            return None
+        data = fetch_api_data(url)
 
         if data:
             movie_info = (data.get('movieInfoResult', {}).get('movieInfo', {}))
@@ -92,7 +65,9 @@ def actor_detail(request):
         people_nm = request.POST.get('peopleNmEn')
 
         if people_nm:
-            people = fetch_api_actor_data(people_nm)
+            url = ('http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleList.json'
+                   f'?key={API_KEY}&peopleNm={people_nm}')
+            people = fetch_api_data(url)
             if not people:
                 return render(request, 'actor_detail.html', {'error': 'Failed to fetch API data or invalid JSON'})
 
@@ -100,14 +75,7 @@ def actor_detail(request):
             url = ('http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleInfo.json'
                    f'?key={API_KEY}&peopleCd={people_cd}')
 
-            response = requests.get(url)
-            if response.status_code != 200:
-                return None
-
-            try:
-                actor = response.json()
-            except json.JSONDecodeError:
-                return None
+            actor = fetch_api_data(url)
 
             if actor:
                 actor_info = (actor.get('peopleInfoResult', {}))
