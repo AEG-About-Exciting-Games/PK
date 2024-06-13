@@ -1,10 +1,9 @@
 from django.shortcuts import render
-
-from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import requests
 import json
 import os
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -12,77 +11,81 @@ API_KEY = os.getenv("API_KEY")
 
 
 def fetch_api_data(url):
-
-    response = requests.get(url)
-
-    if response.status_code != 200:
-        return None
-
     try:
-        movies = response.json()
-    except json.JSONDecodeError:
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
+    except (requests.RequestException, json.JSONDecodeError):
         return None
 
-    return movies
+
+def get_error_response(request, message):
+    return render(request, 'error.html', {'error': message})
+
+
+def get_people_cd(people_nm):
+    url = (f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleList.json?'
+           f'key={API_KEY}&peopleNm={people_nm}')
+    people = fetch_api_data(url)
+    people_list = people.get('peopleListResult', {}).get('peopleList', [])
+    if people_list:
+        return people_list[0].get('peopleCd')
+    return None
+
+
+def get_actor_info(people_cd):
+    url = (f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleInfo.json?'
+           f'key={API_KEY}&peopleCd={people_cd}')
+    return fetch_api_data(url)
 
 
 def daily_view(request):
-    date = datetime.now().date() - timedelta(days=1)
-    date = str(date).replace("-", "")
+    date = (datetime.now().date() - timedelta(days=1)).strftime('%Y%m%d')
+    url = (f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?'
+           f'key={API_KEY}&targetDt={date}')
+    data = fetch_api_data(url)
 
-    if date:
-        url = ('http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json'
-               f'?key={API_KEY}&targetDt={date}')
-        data = fetch_api_data(url)
-        if data:
-            daily_box_office_list = (data.get('boxOfficeResult', {}))
-            return render(request, 'index_view.html', {'box_office': daily_box_office_list})
-        else:
-            return render(request, 'index_view.html', {'error': 'Failed to fetch API data or invalid JSON'})
-    else:
-        return render(request, 'index_view.html', {'error': 'No date provided'})
+    if not data:
+        return get_error_response(request, 'Failed to fetch API data or invalid JSON')
+
+    daily_box_office_list = data.get('boxOfficeResult', {})
+    return render(request, 'index_view.html', {'box_office': daily_box_office_list})
 
 
 def movie_detail(request):
-    if request.method == 'POST':
-        movie_cd = request.POST.get('movieCd')
-        url = ('http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json'
-               f'?key={API_KEY}&movieCd={movie_cd}')
+    if request.method != 'POST':
+        return get_error_response(request, 'Invalid request method')
 
-        data = fetch_api_data(url)
+    movie_cd = request.POST.get('movieCd')
+    if not movie_cd:
+        return get_error_response(request, 'No movie code provided')
 
-        if data:
-            movie_info = (data.get('movieInfoResult', {}).get('movieInfo', {}))
-            return render(request, 'movie_detail.html', {'details': movie_info})
-        else:
-            return render(request, 'movie_detail.html', {'error': 'Failed to fetch API data or invalid JSON'})
-    else:
-        return render(request, 'movie_detail.html', {'error': 'No date provided'})
+    url = (f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?'
+           f'key={API_KEY}&movieCd={movie_cd}')
+    data = fetch_api_data(url)
+
+    if not data:
+        return get_error_response(request, 'Failed to fetch API data or invalid JSON')
+
+    movie_info = data.get('movieInfoResult', {}).get('movieInfo', {})
+    return render(request, 'movie_detail.html', {'details': movie_info})
 
 
 def actor_detail(request):
-    if request.method == 'POST':
-        people_nm = request.POST.get('peopleNmEn')
+    if request.method != 'POST':
+        return get_error_response(request, 'Invalid request method')
 
-        if people_nm:
-            url = ('http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleList.json'
-                   f'?key={API_KEY}&peopleNm={people_nm}')
-            people = fetch_api_data(url)
-            if not people:
-                return render(request, 'actor_detail.html', {'error': 'Failed to fetch API data or invalid JSON'})
+    people_nm_en = request.POST.get('peopleNmEn')
+    if not people_nm_en:
+        return get_error_response(request, 'No people name provided')
 
-            people_cd = (people.get('peopleListResult').get('peopleList')[0].get('peopleCd'))
-            url = ('http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleInfo.json'
-                   f'?key={API_KEY}&peopleCd={people_cd}')
+    people_cd = get_people_cd(people_nm_en)
+    if not people_cd:
+        return get_error_response(request, 'No people found')
 
-            actor = fetch_api_data(url)
+    actor = get_actor_info(people_cd)
+    if not actor:
+        return get_error_response(request, 'Failed to fetch API data or invalid JSON')
 
-            if actor:
-                actor_info = (actor.get('peopleInfoResult', {}))
-                return render(request, 'actor_detail.html', {'details': actor_info})
-            else:
-                return render(request, 'actor_detail.html', {'error': 'Failed to fetch API data or invalid JSON'})
-        else:
-            return render(request, 'actor_detail.html', {'error': 'No date provided'})
-    else:
-        return render(request, 'actor_detail.html', {'error': 'Invalid request method'})
+    actor_info = actor.get('peopleInfoResult', {})
+    return render(request, 'actor_detail.html', {'details': actor_info})
