@@ -6,6 +6,11 @@
     </head>
 
     <body>
+    <h2>Home</h2>
+    {% if user.email %}
+        <p>Welcome, {{ user.nickname }}!</p>
+        <a href="{% url 'users:logout' %}">Logout</a>
+    {% endif %}
     {% block content %}{% endblock content %}
     </body>
 </html>

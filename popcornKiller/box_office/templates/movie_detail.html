@@ -56,7 +56,7 @@
                 {% for actor in details.actors %}
                     <tr>
                         <td>
-                            <form action="{% url 'actor_detail' %}" method="post">
+                            <form action="{% url 'box_office:actor_detail' %}" method="post">
                                 {% csrf_token %}
                                 <button type="submit" name="peopleNmEn" value="{{ actor.peopleNmEn }}">{{ actor.peopleNm }}</button>
                             </form>
