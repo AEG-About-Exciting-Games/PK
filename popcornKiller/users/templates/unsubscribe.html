@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Unsubscribe</h2>
+    <form method="post">
+        {% csrf_token %}
+        <p>Are you sure you want to unsubscribe?</p>
+        <button type="submit">Yes, Unsubscribe</button>
+    </form>
+    <a href="{% url 'users:update' %}">No, Go Back</a>
+{% endblock content %}

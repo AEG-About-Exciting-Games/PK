@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Update Profile</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update</button>
+    </form>
+    <a href="{% url 'users:unsubscribe' %}">Unsubscribe</a>
+    <a href="{% url 'box_office:daily_view' %}">Back to Main</a>
+{% endblock content %}

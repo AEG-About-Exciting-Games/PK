@@ -29,10 +29,13 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(max_length=100, unique=True)
 
-    nickname = models.CharField(max_length=30)
+    nickname = models.CharField(max_length=30, unique=True)
 
     objects = CustomUserManager()  # 재정의된 매니저 클래스 추가
 
     USERNAME_FIELD = "email"  # 고유 식별자로 이메일 사용
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []  # 이제 기본적으로 이메일이 필요하므로 이 목록에서 제거
+
+    def __str__(self):
+        return f"{self.email}, {self.nickname}"
