@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 
-from .form import SignUpForm, LoginForm, UserUpdateForm
+from .forms import SignUpForm, LoginForm, UserUpdateForm
 
 
 def signup(request):
@@ -42,11 +43,13 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return redirect('users:login')
 
 
+@login_required
 def update_view(request):
     if request.method == "POST":
         form = UserUpdateForm(request.POST, instance=request.user)
@@ -60,6 +63,7 @@ def update_view(request):
     return render(request, 'update.html', {'form': form})
 
 
+@login_required
 def unsubscribe_view(request):
     if request.method == "POST":
         user = request.user

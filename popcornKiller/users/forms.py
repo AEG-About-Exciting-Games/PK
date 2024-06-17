@@ -27,7 +27,7 @@ class SignUpForm(UserCreationForm):
 
 
 class LoginForm(AuthenticationForm):
-    username = forms.EmailField(label="Email")
+    username = forms.EmailField(label="Email", max_length=254)
 
 
 class UserUpdateForm(forms.ModelForm):
