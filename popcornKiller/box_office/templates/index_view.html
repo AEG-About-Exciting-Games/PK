@@ -35,7 +35,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <form action="{% url 'movie_detail' %}" method="post">
+                            <form action="{% url 'box_office:movie_detail' %}" method="post">
                                 {% csrf_token %}
                                 <button type="submit" name="movieCd" value="{{ movie.movieCd }}">{{ movie.movieNm }}</button>
                             </form>

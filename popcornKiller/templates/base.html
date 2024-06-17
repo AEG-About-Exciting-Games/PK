@@ -6,6 +6,15 @@
     </head>
 
     <body>
+    <h2><a href="{% url 'box_office:daily_view' %}">Home</a></h2>
+    {% if user.email %}
+        <p>Welcome, {{ user.nickname }}!</p>
+        <a href="{% url 'users:logout' %}">Logout</a>
+        <a href="{% url 'users:update' %}">Update</a>
+    {% else %}
+        <a href="{% url 'users:login' %}">Login</a>
+        <a href="{% url 'users:signup' %}">Signup</a>
+    {% endif %}
     {% block content %}{% endblock content %}
     </body>
 </html>
