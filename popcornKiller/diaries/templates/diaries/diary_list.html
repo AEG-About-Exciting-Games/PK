@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>My Diaries</h2>
+  <a href="{% url 'diaries:diary_create' %}">Create new diary</a>
+  <ul>
+    {% for diary in diaries %}
+      <li>
+        <a href="{% url 'diaries:diary_detail' diary.pk %}">{{ diary.title }}</a>
+        ({{ diary.created_at }})
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

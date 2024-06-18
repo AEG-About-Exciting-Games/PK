@@ -49,7 +49,7 @@ def daily_view(request):
         return get_error_response(request, 'Failed to fetch API data or invalid JSON')
 
     daily_box_office_list = data.get('boxOfficeResult', {})
-    return render(request, 'index_view.html', {'box_office': daily_box_office_list})
+    return render(request, 'box_office/index_view.html', {'box_office': daily_box_office_list})
 
 
 def movie_detail(request):
@@ -68,7 +68,7 @@ def movie_detail(request):
         return get_error_response(request, 'Failed to fetch API data or invalid JSON')
 
     movie_info = data.get('movieInfoResult', {}).get('movieInfo', {})
-    return render(request, 'movie_detail.html', {'details': movie_info})
+    return render(request, 'box_office/movie_detail.html', {'details': movie_info})
 
 
 def actor_detail(request):
@@ -88,4 +88,4 @@ def actor_detail(request):
         return get_error_response(request, 'Failed to fetch API data or invalid JSON')
 
     actor_info = actor.get('peopleInfoResult', {})
-    return render(request, 'actor_detail.html', {'details': actor_info})
+    return render(request, 'box_office/actor_detail.html', {'details': actor_info})

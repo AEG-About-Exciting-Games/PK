@@ -1,6 +1,8 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from unittest.mock import patch
+from unittest.mock import patch, Mock
+
+import requests
 
 
 class ViewTests(TestCase):
@@ -212,9 +214,13 @@ class ViewTests(TestCase):
         self.assertContains(response, '강동원')
         self.assertTemplateUsed(response, 'actor_detail.html')
 
-    # @patch('box_office.views.fetch_api_data')
-    # def test_daily_view_with_invalid_data(self, mock_fetch_api_data):
-    #     mock_fetch_api_data.return_value = None
+    # @patch('requests.get')
+    # def test_daily_view_with_invalid_data(self, mock_get):
+    #     # 설정: mock_get이 올바른 응답 객체를 반환하도록 설정
+    #     mock_response = Mock()
+    #     mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError()
+    #     mock_response.json.return_value = None
+    #     mock_get.return_value = mock_response
     #
     #     response = self.client.get(reverse('box_office:daily_view'))
     #     self.assertEqual(response.status_code, 200)

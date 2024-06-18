@@ -29,12 +29,12 @@ class UserTests(TestCase):
     #     self.assertEqual(response.status_code, 200)
     #
     #     response = self.client.post(reverse('users:login'), {
-    #         'username': 'test@example.com',
-    #         'password': 'password123'
+    #         'username': 'test1@test.com',
+    #         'password': 'djangotest1'
     #     })
     #     self.assertEqual(response.status_code, 302)
     #     self.assertEqual(int(self.client.session['_auth_user_id']), self.user.pk)
-    #
+
     def test_logout_view(self):
         self.client.login(email='tes1t@test.com', password='djangotest1')
         response = self.client.get(reverse('users:logout'))

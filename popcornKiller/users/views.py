@@ -14,11 +14,11 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(email=user.email, password=raw_password)
             login(request, user)
-            return redirect('users:login')
+            return redirect('box_office:daily_view')
     else:
         form = SignUpForm()
 
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'users/signup.html', {'form': form})
 
 
 def login_view(request):
@@ -35,12 +35,12 @@ def login_view(request):
                 return redirect('box_office:daily_view')
 
         else:
-            render(request, 'login.html', {'form': form, 'error': 'Invalid email or password'})
+            render(request, 'users/login.html', {'form': form, 'error': 'Invalid email or password'})
 
     else:
         form = LoginForm()
 
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'users/login.html', {'form': form})
 
 
 @login_required
@@ -60,7 +60,7 @@ def update_view(request):
 
     else:
         form = UserUpdateForm(instance=request.user)
-    return render(request, 'update.html', {'form': form})
+    return render(request, 'users/update.html', {'form': form})
 
 
 @login_required
@@ -70,4 +70,4 @@ def unsubscribe_view(request):
         user.delete()
         logout(request)
         return redirect('users.login')
-    return render(request, 'unsubscribe.html')
+    return render(request, 'users/unsubscribe.html')
