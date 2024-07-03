@@ -1,53 +1,36 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-    <h1>Box Office Rankings</h1>
-    <h2>{{ box_office.boxofficeType }}</h2>
-    <h3>{{ box_office.showRange }}</h3>
-    {% if error %}
-        <p>{{ error }}</p>
-    {% else %}
+<h1 class="mt-4">Daily Box Office</h1>
+
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th scope="col">랭킹</th>
+            <th scope="col">영화 이름</th>
+            <th scope="col">개봉일</th>
+            <th scope="col">금일 매출 액</th>
+            <th scope="col">누적 매출 액</th>
+            <th scope="col">누적 관객수</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for movie in box_office.dailyBoxOfficeList %}
         {% load humanize %}
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>랭킹</th>
-                    <th>전일 대비 순위 변동</th>
-                    <th>랭킹 신규 진입 여부</th>
-                    <th>영화 이름</th>
-                    <th>개봉일</th>
-                    <th>금일 매출 총액 대비 매출 비율</th>
-                    <th>금일 매출 액</th>
-                    <th>누적 매출액</th>
-                    <th>누적 관객수</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for movie in box_office.dailyBoxOfficeList %}
-                    <tr>
-                        <td>{{ movie.rank }}</td>
-                        <td>{{ movie.rankInten }}</td>
-                        <td>
-                            {% if movie.rankOldAndNew == "OLD" %}
-                                기존
-                            {% else %}
-                                신규
-                            {% endif %}
-                        </td>
-                        <td>
-                            <form action="{% url 'box_office:movie_detail' %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" name="movieCd" value="{{ movie.movieCd }}">{{ movie.movieNm }}</button>
-                            </form>
-                        </td>
-                        <td>{{ movie.openDt }}</td>
-                        <td>{{ movie.salesShare }}%</td>
-                        <td>{{ movie.salesAmt|intcomma }}</td>
-                        <td>{{ movie.salesAcc|intcomma }}</td>
-                        <td>{{ movie.audiAcc|intcomma }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
-{% endblock content %}
+        <tr>
+            <th scope="row">{{ movie.rank }}</th>
+            <td>
+                <form action="{% url 'box_office:movie_detail' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="movieCd" value="{{ movie.movieCd }}">{{ movie.movieNm }}</button>
+                </form>
+            </td>
+            <td>{{ movie.openDt }}</td>
+            <td>{{ movie.salesAmt|intcomma }}</td>
+            <td>{{ movie.salesAcc|intcomma }}</td>
+            <td>{{ movie.audiAcc|intcomma }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

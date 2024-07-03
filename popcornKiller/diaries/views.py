@@ -11,6 +11,7 @@ def diary_create(request):
 
         if form.is_valid():
             diary = form.save(commit=False)
+            print(request.user)
             diary.writer = request.user
             diary.save()
             return redirect('diaries:diary_detail', pk=diary.pk)
@@ -22,7 +23,7 @@ def diary_create(request):
 @login_required
 def diary_list(request):
     diaries = Diary.objects.filter(writer=request.user)
-    return render(request, 'diaries/diary_list.html', {'form': diaries})
+    return render(request, 'diaries/diary_list.html', {'diaries': diaries})
 
 
 @login_required

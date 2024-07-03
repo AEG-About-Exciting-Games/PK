@@ -38,4 +38,4 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []  # 이제 기본적으로 이메일이 필요하므로 이 목록에서 제거
 
     def __str__(self):
-        return f"{self.email}, {self.nickname}"
+        return f"{self.nickname}"
