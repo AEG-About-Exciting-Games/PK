@@ -7,6 +7,6 @@
         {{ form.as_p }}
         <button type="submit">Update</button>
     </form>
-    <a href="{% url 'users:unsubscribe' %}">Unsubscribe</a>
+    <a href="{% url 'accounts:unsubscribe' %}">Unsubscribe</a>
     <a href="{% url 'box_office:daily_view' %}">Back to Main</a>
 {% endblock content %}

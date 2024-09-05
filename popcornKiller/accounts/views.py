@@ -18,7 +18,7 @@ def signup(request):
     else:
         form = SignUpForm()
 
-    return render(request, 'users/signup.html', {'form': form})
+    return render(request, 'accounts/signup.html', {'form': form})
 
 
 def login_view(request):
@@ -35,18 +35,18 @@ def login_view(request):
                 return redirect('box_office:daily_view')
 
         else:
-            render(request, 'users/login.html', {'form': form, 'error': 'Invalid email or password'})
+            render(request, 'accounts/login.html', {'form': form, 'error': 'Invalid email or password'})
 
     else:
         form = LoginForm()
 
-    return render(request, 'users/login.html', {'form': form})
+    return render(request, 'accounts/login.html', {'form': form})
 
 
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('users:login')
+    return redirect('accounts:login')
 
 
 @login_required
@@ -56,11 +56,11 @@ def update_view(request):
 
         if form.is_valid():
             form.save()
-            return redirect('users:profile')
+            return redirect('accounts:profile')
 
     else:
         form = UserUpdateForm(instance=request.user)
-    return render(request, 'users/update.html', {'form': form})
+    return render(request, 'accounts/update.html', {'form': form})
 
 
 @login_required
@@ -69,5 +69,5 @@ def unsubscribe_view(request):
         user = request.user
         user.delete()
         logout(request)
-        return redirect('users.login')
-    return render(request, 'users/unsubscribe.html')
+        return redirect('accounts.login')
+    return render(request, 'accounts/unsubscribe.html')

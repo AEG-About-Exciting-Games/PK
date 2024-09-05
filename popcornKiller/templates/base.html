@@ -23,17 +23,17 @@
                         <a class="btn btn-primary" href="{% url 'diaries:diary_list' %}">Diary</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:logout' %}">Logout</a>
+                        <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:update' %}">Update</a>
+                        <a class="nav-link" href="{% url 'accounts:update' %}">Update</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:login' %}">Login</a>
+                        <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:signup' %}">Signup</a>
+                        <a class="nav-link" href="{% url 'accounts:signup' %}">Signup</a>
                     </li>
                 {% endif %}
             </ul>
