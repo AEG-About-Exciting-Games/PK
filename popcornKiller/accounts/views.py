@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 
-from .form import SignUpForm, LoginForm, UserUpdateForm
+from .forms import SignUpForm, LoginForm, UserUpdateForm
 
 
 def signup(request):
@@ -13,11 +14,11 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(email=user.email, password=raw_password)
             login(request, user)
-            return redirect('users:login')
+            return redirect('box_office:daily_view')
     else:
         form = SignUpForm()
 
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'accounts/signup.html', {'form': form})
 
 
 def login_view(request):
@@ -34,36 +35,39 @@ def login_view(request):
                 return redirect('box_office:daily_view')
 
         else:
-            render(request, 'login.html', {'form': form, 'error': 'Invalid email or password'})
+            render(request, 'accounts/login.html', {'form': form, 'error': 'Invalid email or password'})
 
     else:
         form = LoginForm()
 
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'accounts/login.html', {'form': form})
 
 
+@login_required
 def logout_view(request):
     logout(request)
-    return redirect('users:login')
+    return redirect('accounts:login')
 
 
+@login_required
 def update_view(request):
     if request.method == "POST":
         form = UserUpdateForm(request.POST, instance=request.user)
 
         if form.is_valid():
             form.save()
-            return redirect('users:profile')
+            return redirect('accounts:profile')
 
     else:
         form = UserUpdateForm(instance=request.user)
-    return render(request, 'update.html', {'form': form})
+    return render(request, 'accounts/update.html', {'form': form})
 
 
+@login_required
 def unsubscribe_view(request):
     if request.method == "POST":
         user = request.user
         user.delete()
         logout(request)
-        return redirect('users.login')
-    return render(request, 'unsubscribe.html')
+        return redirect('accounts.login')
+    return render(request, 'accounts/unsubscribe.html')

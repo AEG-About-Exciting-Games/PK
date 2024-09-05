@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>{{ diary.title }}</h2>
+  <p>{{ diary.content }}</p>
+  <p>Created at: {{ diary.created_at }}</p>
+  <p>Updated at: {{ diary.updated_at }}</p>
+  <a href="{% url 'diaries:diary_update' diary.pk %}">Edit</a>
+  <form action="{% url 'diaries:diary_delete' diary.pk %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+  </form>
+  <a href="{% url 'diaries:diary_list' %}">Back to list</a>
+{% endblock %}

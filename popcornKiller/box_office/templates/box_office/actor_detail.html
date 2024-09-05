@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1>Actor Details</h1>
+        <h2>{{ details.peopleInfo.peopleNm }}</h2>
+        <h4>{{ details.peopleInfo.peopleNmEn }}</h4>
+        <h4>성별: {{ details.peopleInfo.sex }}</h4>
+        <h4>{{ details.peopleInfo.repRoleNm }}</h4>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% else %}
+            <h4>참여 영화</h4>
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>영화 명</th>
+                        <th>참여 분야</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for filmo in details.peopleInfo.filmos %}
+                        <tr>
+                            <td>
+                                <form action="{% url 'box_office:movie_detail' %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-link" name="movieCd" value="{{ filmo.movieCd }}">{{ filmo.movieNm }}</button>
+                                </form>
+                            </td>
+                            <td>{{ filmo.moviePartNm }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock content %}

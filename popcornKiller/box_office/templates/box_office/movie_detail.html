@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="card-header bg-primary text-white">
+            <h1 class="mb-0">Movie Details</h1>
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">{{ details.movieNm }}</h2>
+            <h3 class="card-subtitle mb-2 text-muted">{{ details.movieNmEn }}</h3>
+            <p class="card-text"><strong>상영시간:</strong> {{ details.showTm }}분</p>
+            <p class="card-text"><strong>개봉연도:</strong> {{ details.openDt|slice:"0:4" }}-{{ details.openDt|slice:"4:6" }}-{{ details.openDt|slice:"6:8" }}</p>
+            <p class="card-text"><strong>제작연도:</strong> {{ details.prdtYear }}년</p>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% else %}
+                <h4>장르</h4>
+                <ul class="list-group mb-3">
+                    {% for genre in details.genres %}
+                        <li class="list-group-item">{{ genre.genreNm }}</li>
+                    {% endfor %}
+                </ul>
+                <h4>제작 국가</h4>
+                <ul class="list-group mb-3">
+                    {% for nation in details.nations %}
+                        <li class="list-group-item">{{ nation.nationNm }}</li>
+                    {% endfor %}
+                </ul>
+                <h4>심의정보</h4>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>심의등급</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for audit in details.audits %}
+                            <tr>
+                                <td>{{ audit.watchGradeNm }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <h4>감독</h4>
+                <ul class="list-group mb-3">
+                    {% for director in details.directors %}
+                        <li class="list-group-item">{{ director.peopleNm }} [{{ director.peopleNmEn }}]</li>
+                    {% endfor %}
+                </ul>
+                <h4>배우</h4>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>배우명</th>
+                            <th>배우명(영문)</th>
+                            <th>배역</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for actor in details.actors %}
+                            <tr>
+                                <td>
+                                    <form action="{% url 'box_office:actor_detail' %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-link" name="peopleNmEn" value="{{ actor.peopleNmEn }}">{{ actor.peopleNm }}</button>
+                                    </form>
+                                </td>
+                                <td>{{ actor.peopleNmEn }}</td>
+                                <td>{{ actor.cast }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <h4>영화사</h4>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>영화사 명</th>
+                            <th>영화사 명(영문)</th>
+                            <th>분야 명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for company in details.companys %}
+                            <tr>
+                                <td>{{ company.companyNm }}</td>
+                                <td>{{ company.companyNmEn }}</td>
+                                <td>{{ company.companyPartNm }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
