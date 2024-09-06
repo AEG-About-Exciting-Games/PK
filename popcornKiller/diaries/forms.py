@@ -5,4 +5,4 @@ from .models import Diary
 class DiariesForm(forms.ModelForm):
     class Meta:
         model = Diary
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'movie']
