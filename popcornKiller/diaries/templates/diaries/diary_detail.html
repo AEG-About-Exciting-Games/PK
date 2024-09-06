@@ -1,14 +1,81 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>{{ diary.title }}</h2>
-  <p>{{ diary.content }}</p>
-  <p>Created at: {{ diary.created_at }}</p>
-  <p>Updated at: {{ diary.updated_at }}</p>
-  <a href="{% url 'diaries:diary_update' diary.pk %}">Edit</a>
-  <form action="{% url 'diaries:diary_delete' diary.pk %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Delete</button>
-  </form>
-  <a href="{% url 'diaries:diary_list' %}">Back to list</a>
+    <div class="container mt-5">
+        <div class="card-header bg-primary text-white">
+            <h1 class="mb-0">Diary Details</h1>
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">{{ diary.title }}</h2>
+            <h3 class="card-subtitle mb-2 text-muted">{{ diary.writer }}</h3>
+            <p class="card-text"><strong>작성일자:</strong> {{ diary.created_at }}</p>
+            <p class="card-text"><strong>최근 수정일자:</strong> {{ diary.updated_at }}</p>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% else %}
+                <h4>내용</h4>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item">{{ diary.content }}</li>
+                </ul>
+                <!-- <h4>지역</h4>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>심의등급</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for audit in details.audits %}
+                            <tr>
+                                <td>{{ audit.watchGradeNm }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table> -->
+                <h4>옵션</h4>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>
+                                <a href="{% url 'diaries:diary_update' diary.pk %}">수정</a>
+                            </th>
+                            <th>
+                                <form action="{% url 'diaries:diary_delete' diary.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit">삭제</button>
+                                </form>
+                            </th>
+                            <th>
+                                <a href="{% url 'diaries:diary_list' %}">되돌아가기</a>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <h4>영화정보</h4>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>영화이름</th>
+                            <th>개봉연도</th>
+                            <th>상영시간</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <form action="{% url 'box_office:movie_detail' %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-link" name="movieCd" value="{{ movieDetail.movieCd }}">{{ movieDetail.movieNm }}</button>
+                                </form>
+                            </td>
+                            <td>{{ movieDetail.openDt }}</td>
+                            <td>{{ movieDetail.showTm }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

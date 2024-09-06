@@ -1,11 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>{% if form.instance.pk %}Edit Diary{% else %}Create Diary{% endif %}</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">{% if form.instance.pk %}Update{% else %}Create{% endif %}</button>
-  </form>
-  <a href="{% url 'diaries:diary_list' %}">Back to list</a>
+    <h2>{% if form.instance.pk %}Edit Diary{% else %}Create Diary{% endif %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <h4>영화정보</h4>
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>영화이름</th>
+                        <th>개봉연도</th>
+                        <th>상영시간</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <form action="{% url 'box_office:movie_detail' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link" name="movieCd" value="{{ movieDetail.movieCd }}">{{ movieDetail.movieNm }}</button>
+                            </form>
+                        </td>
+                        <td>{{ movieDetail.openDt }}</td>
+                        <td>{{ movieDetail.showTm }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        <button type="submit">{% if form.instance.pk %}Update{% else %}Create{% endif %}</button>
+    </form>
+    <a href="{% url 'diaries:diary_list' %}">Back to list</a>
 {% endblock %}
