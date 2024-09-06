@@ -34,6 +34,12 @@ def diary_create(request):
     if request.method == "POST":
         form = DiariesForm(request.POST)
 
+        if form.is_valid():
+            diary = form.save(commit=False)
+            diary.writer = request.user
+            diary.save()
+            return redirect('diaries:diary_detail', pk=diary.pk)
+
         movie_cd = request.POST.get('movieCd')
         if not movie_cd:
             return get_error_response(request, 'No movie code provided')
@@ -46,15 +52,9 @@ def diary_create(request):
             return get_error_response(request, 'Failed to fetch API data or invalid JSON')
 
         movie_info = data.get('movieInfoResult', {}).get('movieInfo', {})
+        # 영화 정보 중 영화 이름을 폼의 초기값으로 설정
+        form = DiariesForm(initial={'movie': movie_info.get('movieNm')})
 
-        if form.is_valid():
-            diary = form.save(commit=False)
-            print(request.user)
-            print(request)
-            diary.writer = request.user
-            diary.movie = request.movie
-            diary.save()
-            return redirect('diaries:diary_detail', pk=diary.pk)
     else:
         form = DiariesForm()
     return render(request, 'diaries/diary_form.html', {'form': form, 'movieDetail': movie_info})
