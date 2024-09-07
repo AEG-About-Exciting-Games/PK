@@ -34,6 +34,28 @@
                         {% endfor %}
                     </tbody>
                 </table> -->
+
+                <h4>영화</h4>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>영화이름</th>
+                            <th>상세정보</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ diary.movie }}</td>
+                            <td>
+                                <form action="{% url 'box_office:search_list' %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-link" name="movieNm" value="{{ diary.movie }}">보러가기</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
                 <h4>옵션</h4>
                 <table class="table table-bordered">
                     <thead class="thead-light">
@@ -52,28 +74,6 @@
                             </th>
                         </tr>
                     </thead>
-                </table>
-                <h4>영화정보</h4>
-                <table class="table table-bordered">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>영화이름</th>
-                            <th>개봉연도</th>
-                            <th>상영시간</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <form action="{% url 'box_office:movie_detail' %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-link" name="movieCd" value="{{ movieDetail.movieCd }}">{{ movieDetail.movieNm }}</button>
-                                </form>
-                            </td>
-                            <td>{{ movieDetail.openDt }}</td>
-                            <td>{{ movieDetail.showTm }}</td>
-                        </tr>
-                    </tbody>
                 </table>
             {% endif %}
         </div>
