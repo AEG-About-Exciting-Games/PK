@@ -94,5 +94,11 @@
                 </table>
             {% endif %}
         </div>
+        <li class="nav-item">
+            <form class="btn btn-primary" action="{% url 'diaries:diary_create' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" name="movieCd" value="{{ details.movieCd }}">Create Movie diary</button>
+            </form>
+        </li>
     </div>
 {% endblock content %}

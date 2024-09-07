@@ -1,11 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>{% if form.instance.pk %}Edit Diary{% else %}Create Diary{% endif %}</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">{% if form.instance.pk %}Update{% else %}Create{% endif %}</button>
-  </form>
-  <a href="{% url 'diaries:diary_list' %}">Back to list</a>
+    <h2>{% if form.instance.pk %}Edit Diary{% else %}Create Diary{% endif %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <h4>영화정보</h4>
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>다이어리</th>
+                        <th>다이어리</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <button type="submit" class="btn btn-link" >{% if form.instance.pk %}수정하기{% else %}만들기{% endif %}</button>
+                        </td>
+                        <td>
+                            <a href="{% url 'diaries:diary_list' %}">돌아가기</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+    </form>
 {% endblock %}

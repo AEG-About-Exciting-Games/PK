@@ -89,3 +89,22 @@ def actor_detail(request):
 
     actor_info = actor.get('peopleInfoResult', {})
     return render(request, 'box_office/actor_detail.html', {'details': actor_info})
+
+
+def search_list(request):
+    if request.method != 'POST':
+        return get_error_response(request, 'Invalid request method')
+    
+    movie_name = request.POST.get('movieNm')
+    if not movie_name:
+        return get_error_response(request, 'No Movie name provided')
+    
+    url = (f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?'
+           f'key={API_KEY}&movieNm={movie_name}')
+    data = fetch_api_data(url)
+
+    if not data:
+        return get_error_response(request, 'Failed to fetch API data or invalid JSON')
+    
+    movie_list = data.get('movieListResult', {}).get('movieList', {})
+    return render(request, 'box_office/search_list.html', {'movies': movie_list})
