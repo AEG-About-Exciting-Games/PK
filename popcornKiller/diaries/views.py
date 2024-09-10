@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
+KAKAO_API_KEY = os.getenv("KAKAO_API_KEY")
 
 def fetch_api_data(url):
     try:
@@ -57,7 +58,7 @@ def diary_create(request):
 
     else:
         form = DiariesForm()
-    return render(request, 'diaries/diary_form.html', {'form': form, 'movieDetail': movie_info})
+    return render(request, 'diaries/diary_form.html', {'form': form, 'movieDetail': movie_info, "apiKey": KAKAO_API_KEY})
 
 
 @login_required
