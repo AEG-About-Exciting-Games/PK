@@ -7,7 +7,10 @@
         {{ form.as_p }}
         <h4>위치정보</h4>
         <input type="text" placeholder="지역을 입력해주세요."  id="location" name="txt">
-        <input type="button"  value="클릭" onclick="get()">
+        <input type="button"  value="CGV" onclick="get('CGV')">
+        <input type="button"  value="롯데시네마" onclick="get('롯데시네마')">
+        <input type="button"  value="메가박스" onclick="get('메가박스')">
+        <input type="button"  value="극장" onclick="get('극장')">
         
         <div id="map" style="width:500px;height:400px;"></div>
         <h4>영화정보</h4>
@@ -55,8 +58,8 @@
                 for (var i=0; i<data.length; i++) {
                     displayMarker(data[i]);    
                     bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-                }       
-
+                }
+                
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
                 map.setBounds(bounds);
             } 
@@ -76,19 +79,23 @@
                 // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
                 infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
                 infowindow.open(map, marker);
+
+                console.log("pin: " + place.place_name);
+                console.log("pin: " + place.x);
+                console.log("pin: " + place.y);
             });
         }
 
         // 검색어 장소로 넘겨주기
-        function get(){
+        function get(cinema){
             // 장소 검색 객체를 생성합니다
             var ps = new kakao.maps.services.Places(); 
             
             let inputValue = document.getElementById('location').value;
-            console.log(inputValue)
+            console.log(inputValue + cinema)
 
             // 키워드로 장소를 검색합니다
-            ps.keywordSearch(inputValue, placesSearchCB); 
+            ps.keywordSearch(inputValue + cinema, placesSearchCB); 
 
         }
 
