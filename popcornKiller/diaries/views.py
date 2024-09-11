@@ -70,7 +70,7 @@ def diary_list(request):
 @login_required
 def diary_detail(request, pk):
     diary = get_object_or_404(Diary, pk=pk, writer=request.user)
-    return render(request, 'diaries/diary_detail.html', {'diary': diary})
+    return render(request, 'diaries/diary_detail.html', {'diary': diary, "apiKey": KAKAO_API_KEY})
 
 
 @login_required
