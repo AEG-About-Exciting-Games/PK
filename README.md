@@ -33,3 +33,7 @@
             ```
         - 그외 API Proxy Server를 고려했으나, 사용자 편의성을 위한 UI (지도)를 제공하지 못하고 JSON 형식으로 제공받아 미적용
     - 지역 관련 데이터베이스에 어떤 방식으로 저장할 것인지 고민.
+
+
+- Diary Models makemigrations -> migrate (X: Error)
+    - https://docs.python.org/3/library/decimal.html
