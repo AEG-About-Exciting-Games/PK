@@ -38,6 +38,16 @@ def diary_create(request):
         if form.is_valid():
             diary = form.save(commit=False)
             diary.writer = request.user
+
+            # 폼에서 받은 장소 정보를 모델에 저장
+            diary.place_name = request.POST.get('place_name')
+            loc_x = request.POST.get('place_x')
+            loc_y = request.POST.get('place_y')
+
+            # 소수점 4자리까지 자르기
+            diary.loc_x = round(float(loc_x), 4) if loc_x else 33.4507
+            diary.loc_y = round(float(loc_y), 4) if loc_y else 126.5706
+
             diary.save()
             return redirect('diaries:diary_detail', pk=diary.pk)
 
