@@ -87,10 +87,13 @@
 
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ apiKey }}&libraries=services"></script>
     <script>
+        
+    var loc_x = parseFloat("{{ diary.loc_x }}") || 37.5459;  // 값이 없으면 기본값 37.5459 사용
+    var loc_y = parseFloat("{{ diary.loc_y }}") || 127.1423;
         var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
             mapOption = {
-                center: new kakao.maps.LatLng(37.5459, 127.1423), // 지도의 중심좌표
-                level: 1 // 지도의 확대 레벨
+                center: new kakao.maps.LatLng(loc_y, loc_x), // 지도의 중심좌표
+                level: 2 // 지도의 확대 레벨
             };  
 
         // 지도를 생성합니다    
