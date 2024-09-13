@@ -1,5 +1,5 @@
 from django.db import models
-from apps.accounts.models import User
+from pk_apps.accounts.models import User
 
 
 class Diary(models.Model):

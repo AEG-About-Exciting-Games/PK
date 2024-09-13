@@ -41,9 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 
-    'apps.box_office',
-    'apps.accounts',
-    'apps.diaries',
+    'pk_apps.box_office',
+    'pk_apps.accounts',
+    'pk_apps.diaries',
 ]
 
 MIDDLEWARE = [

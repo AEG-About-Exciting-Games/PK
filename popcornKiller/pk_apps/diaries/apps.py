@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class BoxofficeConfig(AppConfig):
+class DiariesConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.box_office'
+    name = 'pk_apps.diaries'
