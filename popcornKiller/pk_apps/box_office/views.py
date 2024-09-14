@@ -1,49 +1,16 @@
 from django.shortcuts import render
-from datetime import datetime, timedelta
-import requests
-import json
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
-
-API_KEY = os.getenv("API_KEY")
-
-
-def fetch_api_data(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        return response.json()
-    except (requests.RequestException, json.JSONDecodeError):
-        return None
-
-
-def get_error_response(request, message):
-    return render(request, 'error.html', {'error': message})
-
-
-def get_people_cd(people_nm):
-    url = (f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleList.json?'
-           f'key={API_KEY}&peopleNm={people_nm}')
-    people = fetch_api_data(url)
-    people_list = people.get('peopleListResult', {}).get('peopleList', [])
-    if people_list:
-        return people_list[0].get('peopleCd')
-    return None
-
-
-def get_actor_info(people_cd):
-    url = (f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleInfo.json?'
-           f'key={API_KEY}&peopleCd={people_cd}')
-    return fetch_api_data(url)
+from pk_utils.general_utils import get_error_response
+from pk_apis.movies_api import (get_people_cd
+                                , get_actor_info
+                                , get_daily_movie_chart
+                                , get_movie_detail
+                                , get_movie_search_list
+                            )
 
 
 def daily_view(request):
-    date = (datetime.now().date() - timedelta(days=1)).strftime('%Y%m%d')
-    url = (f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?'
-           f'key={API_KEY}&targetDt={date}')
-    data = fetch_api_data(url)
+    data = get_daily_movie_chart()
 
     if not data:
         return get_error_response(request, 'Failed to fetch API data or invalid JSON')
@@ -60,9 +27,7 @@ def movie_detail(request):
     if not movie_cd:
         return get_error_response(request, 'No movie code provided')
 
-    url = (f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?'
-           f'key={API_KEY}&movieCd={movie_cd}')
-    data = fetch_api_data(url)
+    data = get_movie_detail(movie_cd)
 
     if not data:
         return get_error_response(request, 'Failed to fetch API data or invalid JSON')
@@ -99,9 +64,7 @@ def search_list(request):
     if not movie_name:
         return get_error_response(request, 'No Movie name provided')
     
-    url = (f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?'
-           f'key={API_KEY}&movieNm={movie_name}')
-    data = fetch_api_data(url)
+    data = get_movie_search_list(movie_name)
 
     if not data:
         return get_error_response(request, 'Failed to fetch API data or invalid JSON')
