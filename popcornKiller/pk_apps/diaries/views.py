@@ -1,33 +1,15 @@
+import os
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Diary
 from .forms import DiariesForm
 
-
-## Utils 추가 예정
-def get_error_response(request, message):
-    return render(request, 'error.html', {'error': message})
+from pk_apis.movies_api import get_movie_detail
+from pk_utils.general_utils import get_error_response
 
 
-import requests
-import json
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-API_KEY = os.getenv("API_KEY")
 KAKAO_API_KEY = os.getenv("KAKAO_API_KEY")
-
-def fetch_api_data(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        return response.json()
-    except (requests.RequestException, json.JSONDecodeError):
-        return None
-
-## Utils End Point
 
 
 @login_required
@@ -55,9 +37,7 @@ def diary_create(request):
         if not movie_cd:
             return get_error_response(request, 'No movie code provided')
 
-        url = (f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?'
-            f'key={API_KEY}&movieCd={movie_cd}')
-        data = fetch_api_data(url)
+        data = get_movie_detail(movie_cd)
 
         if not data:
             return get_error_response(request, 'Failed to fetch API data or invalid JSON')
