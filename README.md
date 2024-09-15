@@ -14,6 +14,7 @@
 - 중복 코드 수정 예정
     - app 별 중복 메서드의 경우, utils 모듈화 진행중
 - 회원 인증과 권한 관리
+    - [장고 세션 관리](https://docs.djangoproject.com/ko/4.2/topics/http/sessions/#settings)
 - 영화 시리즈 모아주기
 - Map API 지역 추가
     - Naver Maps API 요금은 2023년부터 아래와 같이 변경되었습니다.
