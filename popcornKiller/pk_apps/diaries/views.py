@@ -2,9 +2,9 @@ import os
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+
 from .models import Diary
 from .forms import DiariesForm
-
 from pk_apis.movies_api import get_movie_detail
 from pk_utils.general_utils import get_error_response
 

@@ -56,7 +56,7 @@ def update_view(request):
 
         if form.is_valid():
             form.save()
-            return redirect('accounts:profile')
+            return redirect('accounts:update')
 
     else:
         form = UserUpdateForm(instance=request.user)

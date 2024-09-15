@@ -1,6 +1,10 @@
 from django.urls import path
 
-from .views import daily_view, movie_detail, actor_detail, search_list
+from .views import (daily_view
+                    , movie_detail
+                    , actor_detail
+                    , search_list)
+
 
 app_name = 'box_office'
 
