@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from dotenv import load_dotenv
-
 from pathlib import Path
 import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -142,3 +142,9 @@ LOGOUT_REDIRECT_URL = '/'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+# 세션 유효 기간 (초 * 분 * 시 * 일)
+SESSION_COOKIE_AGE = 60 * 60 * 4
+
+# 브라우저를 닫으면 세션이 만료되도록 설정
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True

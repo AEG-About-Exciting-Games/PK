@@ -1,6 +1,11 @@
 from django.urls import path
 
-from .views import signup, login_view, logout_view, update_view, unsubscribe_view
+from .views import (signup
+                    , login_view
+                    , logout_view
+                    , update_view
+                    , unsubscribe_view)
+
 
 app_name = 'accounts'
 

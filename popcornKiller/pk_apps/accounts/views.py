@@ -1,3 +1,4 @@
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
@@ -5,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm, LoginForm, UserUpdateForm
 
 
-def signup(request):
+def signup(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = SignUpForm(request.POST)
 
@@ -21,7 +22,7 @@ def signup(request):
     return render(request, 'accounts/signup.html', {'form': form})
 
 
-def login_view(request):
+def login_view(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = LoginForm(request, data=request.POST)
 
@@ -44,19 +45,19 @@ def login_view(request):
 
 
 @login_required
-def logout_view(request):
+def logout_view(request: HttpRequest) -> HttpResponse:
     logout(request)
     return redirect('accounts:login')
 
 
 @login_required
-def update_view(request):
+def update_view(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = UserUpdateForm(request.POST, instance=request.user)
 
         if form.is_valid():
             form.save()
-            return redirect('accounts:profile')
+            return redirect('accounts:update')
 
     else:
         form = UserUpdateForm(instance=request.user)
@@ -64,7 +65,7 @@ def update_view(request):
 
 
 @login_required
-def unsubscribe_view(request):
+def unsubscribe_view(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         user = request.user
         user.delete()

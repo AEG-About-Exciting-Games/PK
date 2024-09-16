@@ -1,10 +1,11 @@
 import os
 
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+
 from .models import Diary
 from .forms import DiariesForm
-
 from pk_apis.movies_api import get_movie_detail
 from pk_utils.general_utils import get_error_response
 
@@ -13,7 +14,7 @@ KAKAO_API_KEY = os.getenv("KAKAO_API_KEY")
 
 
 @login_required
-def diary_create(request):
+def diary_create(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = DiariesForm(request.POST)
 
@@ -52,13 +53,13 @@ def diary_create(request):
 
 
 @login_required
-def diary_list(request):
+def diary_list(request: HttpRequest) -> HttpResponse:
     diaries = Diary.objects.filter(writer=request.user)
     return render(request, 'diaries/diary_list.html', {'diaries': diaries})
 
 
 @login_required
-def diary_detail(request, pk):
+def diary_detail(request: HttpRequest, pk: int) -> HttpResponse:
     diary = get_object_or_404(Diary, pk=pk, writer=request.user)
     context = {
         'diary': diary,
@@ -68,7 +69,7 @@ def diary_detail(request, pk):
 
 
 @login_required
-def diary_update(request, pk):
+def diary_update(request: HttpRequest, pk: int) -> HttpResponse:
     diary = get_object_or_404(Diary, pk=pk, writer=request.user)
     if request.method == "POST":
         form = DiariesForm(request.POST, instance=diary)
@@ -81,7 +82,7 @@ def diary_update(request, pk):
 
 
 @login_required
-def diary_delete(request, pk):
+def diary_delete(request: HttpRequest, pk: int) -> HttpResponse:
     diary = get_object_or_404(Diary, pk=pk, writer=request.user)
     if request.method == "POST":
         diary.delete()

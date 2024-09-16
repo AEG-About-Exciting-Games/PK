@@ -1,3 +1,6 @@
+from typing import Optional, Dict, Any
+
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 from pk_utils.general_utils import get_error_response
@@ -9,17 +12,17 @@ from pk_apis.movies_api import (get_people_cd
                             )
 
 
-def daily_view(request):
-    data = get_daily_movie_chart()
+def daily_view(request: HttpRequest) -> HttpResponse:
+    data: Optional[str] = get_daily_movie_chart()
 
     if not data:
         return get_error_response(request, 'Failed to fetch API data or invalid JSON')
 
-    daily_box_office_list = data.get('boxOfficeResult', {})
+    daily_box_office_list: Optional[str] = data.get('boxOfficeResult', {})
     return render(request, 'box_office/index_view.html', {'box_office': daily_box_office_list})
 
 
-def movie_detail(request):
+def movie_detail(request: HttpRequest) -> HttpResponse:
     if request.method != 'POST':
         return get_error_response(request, 'Invalid request method')
 
@@ -36,7 +39,7 @@ def movie_detail(request):
     return render(request, 'box_office/movie_detail.html', {'details': movie_info})
 
 
-def actor_detail(request):
+def actor_detail(request: HttpRequest) -> HttpResponse:
     if request.method != 'POST':
         return get_error_response(request, 'Invalid request method')
 
@@ -56,7 +59,7 @@ def actor_detail(request):
     return render(request, 'box_office/actor_detail.html', {'details': actor_info})
 
 
-def search_list(request):
+def search_list(request: HttpRequest) -> HttpResponse:
     if request.method != 'POST':
         return get_error_response(request, 'Invalid request method')
     
