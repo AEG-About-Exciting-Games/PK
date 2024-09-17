@@ -1,4 +1,5 @@
-from typing import Optional, Dict, Any
+from typing import Optional
+import re
 
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
@@ -38,7 +39,17 @@ def movie_detail(request: HttpRequest) -> HttpResponse:
     movie_info = data.get('movieInfoResult', {}).get('movieInfo', {})
 
     # 영화 시리즈 검색
-    movie_nm = movie_info["movieNm"].split(":")[0]
+    movie_nm = movie_info["movieNm"]
+    if ":" in movie_nm:
+        movie_nm = movie_nm.split(":")[0]
+    elif "-" in movie_nm:
+        movie_nm = movie_nm.split("-")[0]
+    elif re.search(r'\d', movie_nm):
+        # 숫자를 제거하는 코드
+        movie_nm = re.sub(r'\d', '', movie_nm)
+    else:
+        movie_nm = movie_nm.split(" ")[0]
+
     movie_series = get_movie_search_list(movie_nm)
     movie_series = movie_series.get('movieListResult', {}).get('movieList', {})
 
