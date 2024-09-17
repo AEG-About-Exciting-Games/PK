@@ -92,6 +92,25 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                <h4>시리즈</h4>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>영화 제목</th>
+                            <th>영화 개봉일</th>
+                            <th>장르</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for movie in series %}
+                            <tr>
+                                <td>{{ movie.movieNm }}</td>
+                                <td>{{ movie.openDt }}</td>
+                                <td>{{ movie.repGenreNm }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% endif %}
         </div>
         <li class="nav-item">
