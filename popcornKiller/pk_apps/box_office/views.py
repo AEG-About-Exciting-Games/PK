@@ -36,7 +36,13 @@ def movie_detail(request: HttpRequest) -> HttpResponse:
         return get_error_response(request, 'Failed to fetch API data or invalid JSON')
 
     movie_info = data.get('movieInfoResult', {}).get('movieInfo', {})
-    return render(request, 'box_office/movie_detail.html', {'details': movie_info})
+
+    # 영화 시리즈 검색
+    movie_nm = movie_info["movieNm"].split(":")[0]
+    movie_series = get_movie_search_list(movie_nm)
+    movie_series = movie_series.get('movieListResult', {}).get('movieList', {})
+
+    return render(request, 'box_office/movie_detail.html', {'details': movie_info, "series": movie_series})
 
 
 def actor_detail(request: HttpRequest) -> HttpResponse:
