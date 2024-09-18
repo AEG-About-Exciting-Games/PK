@@ -45,7 +45,6 @@ def movie_detail(request: HttpRequest) -> HttpResponse:
     elif "-" in movie_nm:
         movie_nm = movie_nm.split("-")[0]
     elif re.search(r'\d', movie_nm):
-        # 숫자를 제거하는 코드
         movie_nm = re.sub(r'\d', '', movie_nm)
     else:
         movie_nm = movie_nm.split(" ")[0]
