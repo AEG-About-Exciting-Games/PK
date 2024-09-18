@@ -104,7 +104,12 @@
                     <tbody>
                         {% for movie in series %}
                             <tr>
-                                <td>{{ movie.movieNm }}</td>
+                                <td>
+                                    <form action="{% url 'box_office:movie_detail' %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" name="movieCd" value="{{ movie.movieCd }}">{{ movie.movieNm }}</button>
+                                    </form>
+                                </td>
                                 <td>{{ movie.openDt }}</td>
                                 <td>{{ movie.repGenreNm }}</td>
                             </tr>
