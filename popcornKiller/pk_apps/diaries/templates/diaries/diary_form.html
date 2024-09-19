@@ -2,7 +2,7 @@
 
 {% block content %}
     <h2>{% if form.instance.pk %}Edit Diary{% else %}Create Diary{% endif %}</h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="hidden" id="place_name" name="place_name">

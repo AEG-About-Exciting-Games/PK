@@ -148,3 +148,8 @@ SESSION_COOKIE_AGE = 60 * 60 * 4
 
 # 브라우저를 닫으면 세션이 만료되도록 설정
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
+# 이미지 저장 설정
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
