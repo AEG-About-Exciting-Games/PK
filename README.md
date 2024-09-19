@@ -11,9 +11,17 @@
 ```
 
 ## 과제
+- JS, React.Js - 학습 후 UI 개선 작업
+- Image, Video
+    - 이미지 관련
+        - pillow Library를 활용하여 이미지 확장자 유효성 검사
+        - 이미지 저장 방식
+        - 단일 파일이 아닌 다수 파일 저장
+        - 다수의 이미지일 경우 대표 이미지 선정
 - 회원 인증과 권한 관리
     - [장고 세션 관리](https://docs.djangoproject.com/ko/4.2/topics/http/sessions/#settings)
 - Map API 지역 추가
+    - 영화관 선택 안할 경우 예외 처리 필요
     - Naver Maps API 요금은 2023년부터 아래와 같이 변경되었습니다.
         - 동적 웹 지도(Web Dynamic Map): 무료 -> 월 1000만건 무료, 이후로는 건당 0.1원이 부과됩니다. 
         - 정적 지도(Static Map): 무료 -> 월 300만건 무료, 이후로는 건당 2원이 부과됩니다.
