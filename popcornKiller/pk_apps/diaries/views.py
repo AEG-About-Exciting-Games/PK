@@ -16,7 +16,7 @@ KAKAO_API_KEY = os.getenv("KAKAO_API_KEY")
 @login_required
 def diary_create(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
-        form = DiariesForm(request.POST)
+        form = DiariesForm(request.POST, request.FILES)
 
         if form.is_valid():
             diary = form.save(commit=False)

@@ -6,6 +6,7 @@
         <thead>
             <tr>
                 <th scope="col">제목</th>
+                <th scope="col">사진</th>
                 <th scope="col">영화 이름</th>
                 <th scope="col">작성자</th>
                 <th scope="col">작성일</th>
@@ -21,6 +22,15 @@
                         <button type="submit" >{{ diary.title }}</button>
                     </form>
                 </td>
+                {% if diary.photo %}
+                    <td>
+                        <img src="{{ diary.photo.url }}" alt="{{ diary.title }}">
+                    </td>
+                {% else %}
+                    <td>
+                        No image available
+                    </td>>
+                {% endif %}
                 <td>{{ diary.movie|default:"none" }}</td>
                 <td>{{ diary.writer }}</td>
                 <td>{{ diary.created_at }}</td>

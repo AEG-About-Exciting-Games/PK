@@ -10,4 +10,4 @@ class DiariesForm(forms.ModelForm):
 
     class Meta:
         model = Diary
-        fields = ['title', 'content', 'movie']
+        fields = ['title', 'content', 'movie', 'photo']

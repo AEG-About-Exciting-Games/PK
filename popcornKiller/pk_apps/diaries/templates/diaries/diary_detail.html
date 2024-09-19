@@ -62,6 +62,25 @@
                     </tbody>
                 </table>
 
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>사진</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% if diary.photo %}
+                                <td>
+                                    <img src="{{ diary.photo.url }}" alt="{{ diary.title }}">
+                                </td>
+                            {% else %}
+                                <td>No image available</td>
+                            {% endif %}
+                        </tr>
+                    </tbody>
+                </table>
+
                 <h4>옵션</h4>
                 <table class="table table-bordered">
                     <thead class="thead-light">
